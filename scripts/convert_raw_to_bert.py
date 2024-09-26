@@ -19,23 +19,15 @@ import numpy as np
 argp = ArgumentParser()
 argp.add_argument('input_path')
 argp.add_argument('output_path')
-argp.add_argument('bert_model', help='base or large')
+argp.add_argument('bert_model')
 args = argp.parse_args()
 
 # Load pre-trained model tokenizer (vocabulary)
 # Crucially, do not do basic tokenization; PTB is tokenized. Just do wordpiece tokenization.
-if args.bert_model == 'base':
-  tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
-  model = BertModel.from_pretrained('bert-base-cased')
-  LAYER_COUNT = 12
-  FEATURE_COUNT = 768
-elif args.bert_model == 'large':
-  tokenizer = BertTokenizer.from_pretrained('bert-large-cased')
-  model = BertModel.from_pretrained('bert-large-cased')
-  LAYER_COUNT = 24
-  FEATURE_COUNT = 1024
-else:
-  raise ValueError("BERT model must be base or large")
+tokenizer = BertTokenizer.from_pretrained(args.bert_model)
+model = BertModel.from_pretrained(args.bert_model)
+LAYER_COUNT = model.config.num_hidden_layers
+FEATURE_COUNT = model.config.hidden_size
 
 model.eval()
 

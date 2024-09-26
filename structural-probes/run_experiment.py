@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import shutil
 import yaml
+from pytorch_pretrained_bert import BertModel
 from tqdm import tqdm
 import torch
 import numpy as np
@@ -235,8 +236,13 @@ if __name__ == '__main__':
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-  yaml_args= yaml.load(open(cli_args.experiment_config))
+  yaml_args = yaml.safe_load(open(cli_args.experiment_config))
   setup_new_experiment_dir(cli_args, yaml_args, cli_args.results_dir)
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
   yaml_args['device'] = device
+
+  bert_model = BertModel.from_pretrained(yaml_args['model']['model_name'])
+  yaml_args['model']['hidden_dim'] = bert_model.config.hidden_size
+  bert_model = None
+
   execute_experiment(yaml_args, train_probe=cli_args.train_probe, report_results=cli_args.report_results)
