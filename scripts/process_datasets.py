@@ -76,30 +76,32 @@ for folder in os.listdir(data_folder):
                 spearman_values2[model_name] = []
             spearman_values2[model_name].append((model_layer, spearman))
 
-            tikz_file = open(result_folder + "/dev.tikz").read()
-            latex_content = latex_template.replace("%TIKZFILE%", tikz_file)
-            open(result_folder + "/dev.latex", "w").write(latex_content)
+            # tikz_file = open(result_folder + "/dev.tikz").read()
+            # latex_content = latex_template.replace("%TIKZFILE%", tikz_file)
+            # open(result_folder + "/dev.latex", "w").write(latex_content)
 
             # tikz-dependency package file rüberkopieren
             # shutil.copy(project_folder + "/scripts/templates/tikz-dependency.sty", result_folder + "/tikz-dependency.sty")
 
-            return_code = os.system("cd " + result_folder + " && pdflatex dev.latex")
-            if return_code != 0:
-                raise RuntimeError("pdflatex failed.")
+            # return_code = os.system("cd " + result_folder + " && pdflatex dev.latex")
+            # if return_code != 0:
+            #    raise RuntimeError("pdflatex failed.")
 
 
-    def plot_models(inputs, name):
+    def plot_models(inputs, xlabel, ylabel, name):
         for model_name, plot in inputs.items():
             plot.sort()
             plt.plot([r[0] for r in plot], [r[1] for r in plot], label=model_name)
 
         plt.legend()
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.show()
         plt.savefig(name)
         plt.close()
 
     os.makedirs(folder + "/plots", exist_ok=True)
-    plot_models(root_accuracies, folder + "/plots/parse_depth_root_accuracies.png")
-    plot_models(spearman_values, folder + "/plots/parse_depth_spearman_values.png")
-    plot_models(spearman_values2, folder + "/plots/parse_distance_spearman_values.png")
-    plot_models(spearman_values, folder + "/plots/parse_distance_uuas.png")
+    plot_models(root_accuracies, "Hidden layer", "Root accuracy", folder + "/plots/parse_depth_root_accuracies.png")
+    plot_models(spearman_values, "Hidden layer", "Parse Depth DSpr.", folder + "/plots/parse_depth_spearman_values.png")
+    plot_models(spearman_values2, "Hidden layer", "Parse Distance DSpr.", folder + "/plots/parse_distance_spearman_values.png")
+    plot_models(uuas_values, "Hidden layer", "Parse Distance UUAS", folder + "/plots/parse_distance_uuas.png")
