@@ -4,6 +4,9 @@
 
 # structural-probes
 
+This repository contains a modified version of the original structural probing code, with adjustments to automate testing across different models and datasets.
+All changes are documented in the commit history.
+
 Codebase for testing whether hidden states of neural networks encode discrete structures.
 
 Based on the paper [A Structural Probe for Finding Syntax in Word Representations](https://nlp.stanford.edu/pubs/hewitt2019structural.pdf).
